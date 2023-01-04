@@ -8,13 +8,3 @@ This script is developed to be a one stop shop to onboard a new remote office lo
 
 This is a work in progress and will be uploaded periodically
 
-## Frequently Asked Questions
-
-- Why didn't you use X, Y, or Z to accomplish this?
-  - Because I didn't want to.
-- Don't you think it would be better if you did X instead of Y?
-  - Probably.
-- If I released code this bad, I would be embarassed.
-  - That's not a question. 
-- Doesn't Jordan Villarreal have a similiar FAQ??
-  - Yes, I stole this from him because he's my friends and this is awesome.

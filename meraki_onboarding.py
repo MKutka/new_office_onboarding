@@ -193,3 +193,69 @@ for ib_subnet in ib_subnet_list:
     bar.finish()
 
 print("Infoblox IPAM, DHCP Scopes and MAC Reservations Created succesfully...")
+
+# Creating new Meraki Network
+print('Creating Meraki Network... ' + name)
+product_types = ['appliance', 'switch', 'camera', 'Wireless']
+tz = timezone_dict.get(state)
+dashboard = meraki.DashboardAPI(meraki_api.api_key, suppress_logging=True, print_console=False)
+response = dashboard.organizations.createOrganizationNetwork(meraki_api.org_id, total_pages='all', name=name,
+                                                             productTypes=product_types, timeZone=tz, notes=None)
+
+# Add hardware and licensing to newly created networks
+claimed = input('Has the hardware and required licensing already been added to the Meraki Dashboard?: y/n ')
+if claimed == 'n':
+    order = input("Enter Meraki Order Number: ")
+    if order == '':
+        pass
+    else:
+        order_lookup_response = dashboard.organizations.claimIntoOrganization(meraki_api.org_id, orders=order).json()
+        serials = [x['serial'] for x in response if x['orderNumber'] == order]
+        networks_url = "https://api.meraki.com/api/v1/organizations/" + meraki_api.org_id + "/networks"
+        order_response = requests.request("GET", networks_url, headers=meraki_api.headers).json()
+        for x in order_response:
+            print(x)
+            if str(x['name']) == name:
+                id = str(x['id'])
+                continue_network = 'y'
+                if continue_network == 'y':
+                    device_list = serials
+                    device_Serial_prefix = {
+                        'Q2DD': {
+                            'type': '-AP-',
+                            'count': 1
+                        },
+                        'Q3AC': {
+                            'type': '-AP-',
+                            'count': 1
+                        },
+                        'Q2WN': {
+                            'type': '-MX-',
+                            'count': 1
+                        },
+                        'Q2YN': {
+                            'type': '-MX-',
+                            'count': 1
+                        },
+                        'Q2JN': {
+                            'type': '-MX-',
+                            'count': 1
+                        },
+                        'Q2WP': {
+                            'type': '-SW-',
+                            'count': 1
+                        },
+                        'Q2UX': {
+                            'type': '-SW-',
+                            'count': 1
+                        },
+                    }
+                    add_devices_response = dashboard.networks.claimNetworkDevices(id, device_list).json()
+
+                    for y in device_list:
+                        device_name = city + device_Serial_prefix[y[0:4]]['type'] + str(
+                            device_Serial_prefix[y[0:4]]['count'])
+                        device_Serial_prefix[y[0:4]]['count'] += 1
+                        name_device_response = dashboard.devices.updateDevice(y, name=device_name,
+                                                                              address=address).json()
+                        print("Devices Added to Meraki Network Successfully...")

@@ -16,13 +16,14 @@ from urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 # Time Zones
+AST = 'America/Anchorage'
 EST = 'America/New_York'
 CST = 'America/Chicago'
 MST = 'America/Denver'
 PST = 'America/Los_Angeles'
 
 # Maps states to their timezones
-timezone_dict = {"AL": CST, "AZ": MST, "AR": CST, "CA": PST, "CO": MST, "CT": EST,
+timezone_dict = {"AK": AST,"AL": CST, "AZ": MST, "AR": CST, "CA": PST, "CO": MST, "CT": EST,
                  "DE": EST, "DC": EST, "FL": EST, "GA": EST, "ID": MST, "IL": CST, "IN": EST, "IA": CST,
                  "KS": CST, "KY": CST, "LA": CST, "ME": EST, "MD": EST, "MA": EST, "MI": EST, "MN": CST,
                  "MS": CST, "MO": CST, "MT": MST, "NE": CST, "NV": PST, "NH": EST, "NJ": EST, "NM": MST,
@@ -187,7 +188,7 @@ for ib_subnet in ib_subnet_list:
                                            "num": 3,
                                            "value": ib_gateway_ip}]
                                      })
-    ib_dhcp_response = requests.request("POST", ranges_url, headers=infoblox.ib_auth_header, data=dhcp_range_payload,
+    ib_dhcp_response = requests.request("POST", ranges_url, headers=infoblox.ib_auth_headers, data=dhcp_range_payload,
                                         verify=False)
     bar.finish()
 

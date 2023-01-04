@@ -1,6 +1,7 @@
 import cities
 import infoblox
 import ipaddress
+import ise_api
 import json
 import meraki
 import meraki_api
@@ -259,3 +260,33 @@ if claimed == 'n':
                         name_device_response = dashboard.devices.updateDevice(y, name=device_name,
                                                                               address=address).json()
                         print("Devices Added to Meraki Network Successfully...")
+
+# Add New Site Location to ISE
+ise_location_name = name.replace("-", " ")
+ise_site_url = f"https://{ise_api.url}:9060/ers/config/networkdevicegroup"
+ise_payload = {"NetworkDeviceGroup": {
+                        "name": "Location#All Locations#" + ise_location_name,
+                        "othername": "Location",
+                        "description": name,
+                        "link": {
+                            "rel": "self",
+                            "href": f"https://{ise_api.url}/ers/config/networkdevicegroup",
+                            "type": "application/json"
+                        }
+                    },
+                }
+ise_location_response = requests.request("POST", ise_site_url, headers=ise_api, json=ise_payload, verify=False)
+
+# Add Devices to ISE
+clean_ip_address_list = vlan105.replace(' ', '').split('.')
+switch_applianceIp = '.'.join(clean_ip_address_list)
+site_prefix = switch_applianceIp.replace('0/24', '')
+
+def add_device(ise_device_name, device_type, device_ip):
+    ise = ERS(ise_node=ise_api.url, ers_user=ise_api.user, ers_pass=ise_api.password, verify=False, disable_warnings=True)
+    return ise.add_device(name=ise_device_name, 
+                          ip_address=device_ip, 
+                          radius_key=ise_api.radius_key, 
+                          snmp_ro=ise_api.snmp_string, 
+                          dev_location='Location#All Locations#' + ise_location_name,
+                          dev_type=device_type)

@@ -115,12 +115,6 @@ print("Creating Infoblox IPAM and DHCP Scopes...")
 opts = {'host': infoblox.host, 'username': infoblox.user, 'password': infoblox.pwd}
 conn = connector.Connector(opts)
 object_mgr = InfobloxObjectManager(conn)
-# ms_server = [{'name': 'dcedhcp02.insightglobal.net',
-#               '_struct': 'msdhcpserver',
-#               'ipv4addr': 'dcedhcp02.insightglobal.net',},
-#               {'name': 'dcwdhcp02.insightglobal.net',
-#               '_struct': 'msdhcpserver',
-#               'ipv4addr': 'dcwdhcp02.insightglobal.net',}]
 
 vlan101 = '10.' + site_id + '.32.0/20'
 vlan103 = '10.' + site_id + '.3.0/24'

@@ -17,15 +17,16 @@ from urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 # Time Zones
-AST = 'America/Anchorage'
 EST = 'America/New_York'
 CST = 'America/Chicago'
 MST = 'America/Denver'
 PST = 'America/Los_Angeles'
+AST = 'America/Anchorage'
+HST = 'America/Hawaii'
 
 # Maps states to their timezones
-timezone_dict = {"AK": AST,"AL": CST, "AZ": MST, "AR": CST, "CA": PST, "CO": MST, "CT": EST,
-                 "DE": EST, "DC": EST, "FL": EST, "GA": EST, "ID": MST, "IL": CST, "IN": EST, "IA": CST,
+timezone_dict = {"AK": AST, "AL": CST, "AZ": MST, "AR": CST, "CA": PST, "CO": MST, "CT": EST,
+                 "DE": EST, "DC": EST, "FL": EST, "GA": EST, "HI": HST, "ID": MST, "IL": CST, "IN": EST, "IA": CST,
                  "KS": CST, "KY": CST, "LA": CST, "ME": EST, "MD": EST, "MA": EST, "MI": EST, "MN": CST,
                  "MS": CST, "MO": CST, "MT": MST, "NE": CST, "NV": PST, "NH": EST, "NJ": EST, "NM": MST,
                  "NY": EST, "NC": EST, "ND": CST, "OH": EST, "OK": CST, "OR": PST, "PA": EST,

@@ -290,3 +290,34 @@ def add_device(ise_device_name, device_type, device_ip):
                           snmp_ro=ise_api.snmp_string, 
                           dev_location='Location#All Locations#' + ise_location_name,
                           dev_type=device_type)
+
+meraki_url = "https://api.meraki.com/api/v1/organizations/" + meraki_api.org_id + "/networks"
+network_lookup_response = requests.request("GET", meraki_url, headers=meraki_api.headers).json()
+for x in network_lookup_response:
+     if str(x['name']) == name:
+        id = str(x['id'])
+
+        meraki_network_device_url = "https://api.meraki.com/api/v1/networks/" + id + "/devices"
+        meraki_response_devices = requests.request("GET", meraki_network_device_url,
+                                                                   headers=meraki_api.headers)
+
+        for device in meraki_response_devices.json():
+            if 'AP' in device['name']:
+                add_device(device['name'], 'Device Type#All Device Types#Meraki_MR-APs',
+                            site_prefix + str(int(device['name'][-1]) + 10 - 1))
+            elif 'SW' in device['name']:
+                add_device(device['name'], 'Device Type#All Device Types#Meraki_MS-Switches',
+                            site_prefix + str(int(device['name'][-1]) + 30 - 1))
+            elif 'MX' in device['name']:
+                add_device(device['name'], 'Device Type#All Device Types#Meraki_MX-Firewalls',
+                            site_prefix + str(int(device['name'][-1]) + 60 - 1))
+                print("Devices Added to ISE Successfully...")
+
+# Create Switch-Stack
+create_stack = input("Create Switch_Stack: y/n? ")
+if "y" in create_stack:
+    stack_name = name + '_Stack-01'
+    str1 = 'Q2UX'
+    switches = [string for string in device_list if str1 in string]
+    response = dashboard.switch.createNetworkSwitchStack(id, stack_name, switches)
+    print("Switch-Stack Created Successfully...")
